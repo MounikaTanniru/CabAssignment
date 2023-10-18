@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cab Booking System</title>
+</head>
+<body>
+    <h1>Cab Booking System</h1>
+
+    <div>
+        <label for="source">Source: </label>
+        <input type="text" id="source" placeholder="Enter source">
+    </div>
+
+    <div>
+        <label for="destination">Destination: </label>
+        <input type="text" id="destination" placeholder="Enter destination">
+    </div>
+
+    <div>
+        <label for="email">Email: </label>
+        <input type="text" id="email" placeholder="Enter your email">
+    </div>
+
+    <div>
+        <label for="cab_choice">Choose a Cab: </label>
+        <select id="cab_choice">
+            <option value="Cab1">Cab 1</option>
+            <option value="Cab2">Cab 2</option>
+            <option value="Cab3">Cab 3</option>
+            <option value="Cab4">Cab 4</option>
+            <option value="Cab5">Cab 5</option>
+        </select>
+    </div>
+
+    <button id="bookCab">Book Cab</button>
+
+    <div id="results">
+        <h2>Results</h2>
+        <p>Message: <span id="message"></span></p>
+        <p>Shortest Path: <span id="shortestPath"></span></p>
+        <p>Estimated Cost: $<span id="estimatedCost"></span></p>
+    </div>
+
+    <script>
+        // JavaScript code to handle the booking process
+        document.getElementById("bookCab").addEventListener("click", function () {
+            var source = document.getElementById("source").value;
+            var destination = document.getElementById("destination").value;
+            var email = document.getElementById("email").value;
+            var cabChoice = document.getElementById("cab_choice").value;
+
+            // Send the booking request to the server
+            fetch('/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    source: source,
+                    destination: destination,
+                    cab_choice: cabChoice
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("message").innerText = data.message;
+                document.getElementById("shortestPath").innerText = data.shortest_path.join(" -> ");
+                document.getElementById("estimatedCost").innerText = data.estimated_cost;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("message").innerText = 'Error during booking';
+                document.getElementById("shortestPath").innerText = '';
+                document.getElementById("estimatedCost").innerText = '';
+            });
+        });
+    </script>
+</body>
+</html>
+
